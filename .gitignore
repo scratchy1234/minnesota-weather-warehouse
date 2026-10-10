@@ -1,0 +1,30 @@
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+*.json.key
+*credentials*
+*service-account*.json
+*.pem
+*.p12
+
+# Downloaded data / row-level extracts
+/data/
+/downloads/
+/raw/
+/tmp/
+*.csv
+*.parquet
+*.ndjson
+*.jsonl
+*.csv.gz
+*.tsv
+
+# Common local files
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.venv/
+venv/
