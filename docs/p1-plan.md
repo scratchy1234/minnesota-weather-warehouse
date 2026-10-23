@@ -52,7 +52,7 @@ The data are public, but the results only represent weather station observations
 
 - **What I changed and why:**
 
-  I explained the different denominators for extreme cold and cold with snowfall. I also added planned checks for duplicate keys, unmatched keys, and Curated-to-Serving counts. Besides, I identified myself as the project owner and data steward. These changes should make the results easier to verify.
+  I explained the different denominators for extreme cold and cold with snowfall. I also added planned checks for duplicate keys, unmatched keys, and Curated-to-Serving counts. Besides, I identified myself as the project owner and data steward.
 
 - **Feedback I did not adopt and why:**
 
@@ -61,5 +61,7 @@ The data are public, but the results only represent weather station observations
 - **Most important remaining uncertainty:**
 
   I still need to investigate the 67-row difference between P0 and P1 and how future NOAA updates could affect historical results.
+
+### AI/tool accountability
 
 I used ChatGPT to generate the model diagram.
