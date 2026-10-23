@@ -2,7 +2,7 @@
 
 My audience is facilities operations managers who are responsible for multiple locations across Minnesota. In P0, I proposed a dashboard to help them compare winter weather conditions for seasonal planning. My main question is how often selected stations record extreme cold and how often it occurs with measurable snowfall.
 
-To check the source, I used NOAA GHCN-Daily data (ghcnd_2025 and ghcnd_stations) in my data732 project. Since each source row represents one station, date, and weather element, I plan to combine TMIN and SNOW into one station-day fact.
+To check the source, I queried NOAA GHCN-Daily tables (`bigquery-public-data.ghcn_d.ghcnd_2025` and `bigquery-public-data.ghcn_d.ghcnd_stations`) using my `data732` project. Since each source row represents one station, date, and weather element, I plan to combine TMIN and SNOW into one station-day fact.
 
 | Source check | P0 | P1 |
 |---|---:|---:|
@@ -22,9 +22,9 @@ For my warehouse, I plan to use fact_station_daily_weather as a periodic snapsho
 
 The model is shown in [model.png](model.png).
 
-To test the model, I created a daily row for each of the 85 stations in 2025, which produced 31,025 fact rows with no repeated keys. Since some days have missing observations, I will keep them as NULL instead of zero. For the main cold question, I will use all valid TMIN days, while the same-day snowfall question will use only paired days.
+To test the model, I created a daily row for each of the 85 stations in 2025, which produced 31,025 fact rows with no repeated keys. Since some days have missing observations, I will keep them as NULL instead of zero. At the station-day grain, I will count extreme cold using all days with valid TMIN, even if snowfall is missing. For the combined cold-and-snowfall question, I will only use days with both valid measurements.
 
-One possible history issue is a change in the extreme-cold definition. I compared **-20°F (V1)** with **-15°F (V2)** using the same 30,285 paired days. The count increased from 531 to 976, a difference of 445. Therefore, I plan to keep the original measurements in Raw and the threshold versions in Serving so past results can still be reproduced. For station information, I will use Type 1 for corrections. In P3, I will test that adding V2 does not change the V1 result.
+One possible history issue is a change in the extreme-cold definition. I compared **-20°F (V1)** with **-15°F (V2)** using the same 30,285 paired days. The count increased from 531 to 976, a difference of 445. The V1 count here is 531 instead of 534 because this comparison only uses paired observations. Therefore, I plan to keep the original measurements in Raw and the threshold versions in Serving so past results can still be reproduced. For station information, I will use Type 1 for corrections. In P3, I will test that adding V2 does not change the V1 result.
 
 ## 3. Plan the build and its checks
 
@@ -36,10 +36,30 @@ I plan to build my warehouse in three layers: Raw, Curated, and Serving. Raw wil
 | Curated | `curated_station_day`, `dim_station`, `dim_date`, `fact_station_daily_weather` |
 | Serving | `ref_cold_definition`, `serving_station_cold_summary` |
 
-To make sure the pipeline works correctly, I will compare source row counts, check for duplicate fact keys and unmatched dimension keys, and verify the results against my P1 SQL. For example, TMIN will move from its original NOAA value to fact_station_daily_weather.tmin_f and then to the cold-day summary. In addition, I will check that introducing V2 does not change the original V1 result.
+I will first load the source data into Raw, then build the daily fact and dimensions in Curated, and finally create the Serving summaries.
 
-The data are public, but the results only represent weather station observations rather than actual facility conditions. I will keep raw data exports and credentials out of GitHub. For P2, my first step will be to load the 2025 Minnesota data into Raw and verify the row counts.
+To make sure the pipeline works correctly, I will compare source row counts and check for duplicate fact keys and unmatched dimension keys in Curated. I expect zero duplicates and unmatched keys. I will also compare extreme-cold counts between Curated and Serving by station and month, using the same V1 definition. I expect no differences between the results. For example, TMIN will move from its original NOAA value to fact_station_daily_weather.tmin_f and then to the cold-day summary. In addition, I will check that introducing V2 does not change the original V1 result.
+
+The data are public, but the results only represent weather station observations rather than actual facility conditions. I will be the project owner and data steward for this course project. I will keep raw data exports and credentials out of GitHub. For P2, my first step will be to load the 2025 Minnesota data into Raw and verify the row counts.
 
 ## 4. Diagnose and revise the plan
+
+### P1 change memo
+
+- **Feedback that changed my plan:**
+
+  My peer suggested that I clarify the metric definitions, make the quality checks more specific, and identify who owns the project.
+
+- **What I changed and why:**
+
+  I explained the different denominators for extreme cold and cold with snowfall. I also added planned checks for duplicate keys, unmatched keys, and Curated-to-Serving counts. Besides, I identified myself as the project owner and data steward. These changes should make the results easier to verify.
+
+- **Feedback I did not adopt and why:**
+
+  I did not add detailed failure-handling procedures or separate metadata tables in P1. I plan to address them in P2 or P3 after building the pipeline.
+
+- **Most important remaining uncertainty:**
+
+  I still need to investigate the 67-row difference between P0 and P1 and how future NOAA updates could affect historical results.
 
 I used ChatGPT to generate the model diagram.
