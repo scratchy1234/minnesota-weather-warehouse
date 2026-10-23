@@ -18,8 +18,6 @@ P0 checked whether the source could support the project. In P1, I define the dai
 - [Model Diagram](docs/model.png)
 - [BigQuery SQL](sql/01_source_profile.sql)
 
-P1 is a draft for M07 peer review. I will add the feedback to the plan after the discussion.
-
 ## Data Source
 
 NOAA GHCN-Daily (`bigquery-public-data.ghcn_d`)
