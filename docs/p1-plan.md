@@ -18,7 +18,7 @@ For consistent comparisons, I defined extreme cold as **TMIN ≤ -20°F** and re
 
 ## 2. Define the model and predict a history consequence
 
-For my warehouse, I plan to use fact_station_daily_weather as a periodic snapshot, with one row per selected station per day. It connects to dim_station and dim_date through station_key and date_key. The fact stores minimum temperature, snowfall, and observation flags, while the dimensions provide station and calendar information. This allows me to compare extreme cold and snowfall using the same daily records.
+For my warehouse, I plan to use fact_station_daily_weather as a periodic snapshot. One row represents one selected station on one day. It connects to dim_station and dim_date through station_key and date_key. The fact stores minimum temperature, snowfall, and observation flags, while the dimensions provide station and calendar information. This allows me to compare extreme cold and snowfall using the same daily records.
 
 The model is shown in [model.png](model.png).
 
