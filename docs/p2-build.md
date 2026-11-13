@@ -67,4 +67,4 @@ The scripts need access to the public NOAA tables and permission to create table
 
 These results describe weather stations, not individual facilities. In P3, I will build Serving, check its counts against Curated, and test reruns and the -20°F and -15°F cold definitions. I will also compare the P2 Raw backup with NOAA to see whether new source changes affect the selected stations and results.
 
-I used ChatGPT to help draft the SQL and report. I ran the queries in BigQuery and checked the results myself.
+I used ChatGPT to help draft the plan and the SQL. I ran the queries in BigQuery and checked the results myself.
